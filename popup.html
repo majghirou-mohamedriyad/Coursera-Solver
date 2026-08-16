@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Coursera Quiz Solver</title>
+<style>
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap);
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:380px;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#07070b;overflow-x:hidden}
+.container{background:linear-gradient(160deg,#0d0d14 0,#07070b 50%,#0a0812 100%);padding:22px;position:relative;overflow:hidden}
+.container::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(139,92,246,.04) 0,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(99,102,241,.03) 0,transparent 50%);pointer-events:none;animation:ambientGlow 8s ease-in-out infinite alternate}
+@keyframes ambientGlow{0%{opacity:.6;transform:scale(1)}100%{opacity:1;transform:scale(1.05)}}
+
+/* SVG Icons Style */
+.svg-icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.svg-icon-sm { width: 13px; height: 13px; }
+.svg-icon-lg { width: 18px; height: 18px; }
+.svg-icon-fill { fill: currentColor; stroke: none; }
+
+#license-screen{display:none}
+#main-ui{animation:fadeInUp .4s ease-out;position:relative}
+#main-ui .header{text-align:center;margin-bottom:18px}
+.logo{width:64px;height:64px;background:linear-gradient(135deg,#1a1530,#0e0e18);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(0,0,0,.5);border:1px solid rgba(139,92,246,.2);transition:all .3s ease}
+.logo:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(139,92,246,.15);border-color:rgba(139,92,246,.4)}
+.logo img{width:40px;height:40px;object-fit:contain}
+h1{font-size:1.45rem;font-weight:800;background:linear-gradient(135deg,#fff 0,#c4b5fd 50%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;letter-spacing:-.5px}
+.subtitle{font-size:.68rem;color:#52525b;letter-spacing:.2px}
+.badge{display:inline-flex;align-items:center;gap:5px;background:rgba(124,58,237,.1);color:#a78bfa;font-size:.55rem;padding:4px 12px;border-radius:30px;margin-top:8px;border:1px solid rgba(124,58,237,.2);font-weight:600;letter-spacing:.3px}
+
+.star-repo-banner{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(251,191,36,.06),rgba(245,158,11,.04));border:1px solid rgba(251,191,36,.15);border-radius:14px;cursor:pointer;transition:all .3s cubic-bezier(.2, .8, .2, 1);text-decoration:none;position:relative;overflow:hidden}
+.star-repo-banner::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(251,191,36,.06),transparent);transition:left .6s}
+.star-repo-banner:hover::before{left:100%}
+.star-repo-banner:hover{background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(245,158,11,.07));border-color:rgba(251,191,36,.3);transform:translateY(-1px);box-shadow:0 4px 16px rgba(251,191,36,.08)}
+.star-repo-banner .star-icon{color:#fbbf24;display:flex;align-items:center;animation:starPulse 2s ease-in-out infinite}
+@keyframes starPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.star-repo-banner .star-text{font-size:.72rem;font-weight:600;color:#fbbf24;letter-spacing:.2px}
+.star-repo-banner .star-arrow{color:#d97706;display:flex;align-items:center;transition:transform .3s}
+.star-repo-banner:hover .star-arrow{transform:translateX(3px)}
+
+.button-group{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.btn{width:100%;padding:12px 16px;border:none;border-radius:14px;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .25s cubic-bezier(.2, .8, .2, 1);display:flex;align-items:center;justify-content:center;gap:9px;position:relative;overflow:hidden}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#7c3aed);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.2)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.3)}
+.btn-primary:active{transform:translateY(0)}
+.btn-success{background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.2)}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,.3)}
+.btn-success:active{transform:translateY(0)}
+
+.btn-gradient-all{background:linear-gradient(135deg,#8b5cf6,#ec4899,#3b82f6);color:#fff;font-weight:700;box-shadow:0 4px 18px rgba(139,92,246,.35);border:1px solid rgba(255,255,255,.15);position:relative;overflow:hidden}
+.btn-gradient-all:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(236,72,153,.45)}
+.btn-gradient-all:active{transform:translateY(0)}
+
+.mini-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.mini-actions .btn{padding:10px 12px;font-size:.72rem;background:rgba(14,14,20,.8);border:1px solid #18182a;color:#d1d5db;box-shadow:none;font-weight:500;gap:7px}
+.mini-actions .btn:hover{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.3);transform:translateY(-1px);color:#e2e8f0}
+.mini-actions .btn.full-width{grid-column:1/-1}
+
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0 12px}
+.divider::after,.divider::before{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,#1a1a28,transparent)}
+.divider span{font-size:.65rem;color:#52525b;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+
+.api-section{background:rgba(10,10,16,.6);border-radius:16px;padding:15px;border:1px solid #141420;position:relative;overflow:hidden}
+.api-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.2),transparent)}
+.api-label{font-size:.7rem;font-weight:600;color:#71717a;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.api-row{display:flex;gap:8px}
+.api-row input,.api-row select{flex:1;padding:10px 12px;background:#0c0c12;border:1px solid #1e1e2e;border-radius:12px;color:#e2e8f0;font-size:.72rem;font-family:'JetBrains Mono','Fira Code',monospace;transition:all .25s}
+.api-row input:focus,.api-row select:focus{outline:0;border-color:#7c3aed;box-shadow:0 0 0 2px rgba(124,58,237,.1)}
+.api-row select{font-family:Inter,sans-serif;appearance:none;background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%237c3aed%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");background-repeat:no-repeat;background-position:right 12px top 50%;background-size:10px auto;padding-right:30px;cursor:pointer}
+.gemini-info{background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:9px;margin-top:9px;font-size:.65rem;color:#d1d5db;line-height:1.4;display:none}
+.gemini-info b{color:#a78bfa}
+.api-row button{padding:10px 16px;background:#141420;color:#e2e8f0;border:1px solid #1e1e2e;border-radius:12px;cursor:pointer;font-size:.68rem;font-weight:600;transition:all .25s;letter-spacing:.3px;display:flex;align-items:center;gap:6px}
+.api-row button:hover{background:#1e1e30;border-color:#7c3aed}
+
+.status{font-size:.64rem;padding:9px;border-radius:10px;margin-top:9px;text-align:center;font-weight:500;display:none}
+.status.success{background:rgba(16,185,129,.06);color:#34d399;border:1px solid rgba(16,185,129,.15)}
+.status.error{background:rgba(239,68,68,.06);color:#f87171;border:1px solid rgba(239,68,68,.15)}
+.status.info{background:rgba(124,58,237,.06);color:#a78bfa;border:1px solid rgba(124,58,237,.15)}
+
+footer{text-align:center;padding-top:12px;margin-top:12px;border-top:1px solid rgba(255,255,255,.03)}
+.powered-by{font-size:.58rem;color:#52525b;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:5px}
+.powered-by strong{background:linear-gradient(135deg,#a78bfa,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logout-btn{background:0 0;border:1px solid rgba(239,68,68,.15);color:#71717a;font-size:.6rem;cursor:pointer;padding:5px 14px;border-radius:8px;margin-top:8px;transition:all .25s;font-weight:500;display:inline-flex;align-items:center;gap:5px}
+.logout-btn:hover{color:#f87171;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.05)}
+
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:0 0}
+::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="license-screen" style="display:none"></div>
+  
+  <div id="main-ui" style="display:block">
+    <div class="header">
+      <div class="logo" id="main-logo">
+        <img src="icons/coursera.png" alt="Coursera Logo">
+      </div>
+      <h1>Coursera Solver</h1>
+      <div class="subtitle">Intelligent Coursera Assistant</div>
+      <div class="badge">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor"/></svg>
+        Powered by AI
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-primary" id="solveQuizBtn">
+        <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+        Solve This Quiz
+      </button>
+      <button class="btn btn-success" id="solveAllBtn">
+        <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4.5c1.45-1.47 4.5-2 4.5-2"/><path d="M15 12v5s3.03-.55 4.5-2c1.47-1.45 2-4.5 2-4.5"/></svg>
+        Solve All Quizzes
+      </button>
+    </div>
+    
+    <div class="mini-actions">
+      <button class="btn" id="skipVideosBtn">
+        <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+        Skip Videos
+      </button>
+      <button class="btn" id="skipReadingsBtn">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Skip Readings
+      </button>
+      <button class="btn" id="skipDiscussionBtn">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Skip Discussion
+      </button>
+      <button class="btn" id="skipPluginsBtn">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2v6m7 0v6a7 7 0 0 1-14 0V8m2-6v6m5 10v6"/></svg>
+        Skip Plugins
+      </button>
+    </div>
+    
+    <div class="divider">
+      <span>
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </span>
+    </div>
+    
+    <div class="api-section">
+      <div class="api-label">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+        AI Provider
+      </div>
+      <div class="api-row" style="margin-bottom:10px">
+        <select id="llmProvider">
+          <option value="groq">Groq (Llama 3.3) — Fast & Free</option>
+          <option value="gemini">Gemini (Google AI Studio)</option>
+        </select>
+      </div>
+      
+      <div id="geminiModelContainer" style="display:none;margin-bottom:10px">
+        <div class="api-label">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5c0 1.66-.81 3.13-2.05 4.05.65.65 1.05 1.55 1.05 2.55a3.6 3.6 0 0 1-3.6 3.6c-.34 0-.67-.05-.98-.14A3.99 3.99 0 0 1 8 20a4 4 0 0 1-4-4c0-1 .4-1.9 1.05-2.55A4.98 4.98 0 0 1 3 9.4 5 5 0 0 1 8 4.4c.64 0 1.25.12 1.82.35A4.97 4.97 0 0 1 12 2z"/></svg>
+          Gemini Model
+        </div>
+        <div class="api-row">
+          <select id="geminiModel">
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash - 15 RPM (Recommended)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite (Stable)</option>
+            <option value="gemini-3-flash-preview">Gemini 3 Flash (Preview)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro - 5 RPM</option>
+          </select>
+        </div>
+        <div class="gemini-info" id="geminiInfo">
+          <b>Flash Models:</b> Best for quiz solving (15 RPM).<br>
+          <b>Pro Models:</b> Higher intelligence but 5 RPM limit.
+        </div>
+      </div>
+
+      <div class="api-label">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Solving Speed & Simulation
+      </div>
+      <div class="api-row" style="margin-bottom:10px">
+        <select id="speedMode">
+          <option value="human" selected>Human-like Simulation (1-3s delay)</option>
+          <option value="instant">Instant Mode (Fastest)</option>
+          <option value="slow">Slow & Steady (3-6s delay)</option>
+        </select>
+      </div>
+      
+      <div class="api-label" id="apiKeyLabel">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-1.5-1.5L3 17a3 3 0 1 0 4.24 4.24l4.5-4.5 1.5 1.5 3-3-1.5-1.5 3.5-3.5 1.5 1.5 2-2-1.5-1.5L21 2z"/></svg>
+        Groq API Key
+      </div>
+      <div class="api-row">
+        <input type="password" id="apiKey" placeholder="Enter your API key (gsk_...)" autocomplete="off">
+        <button id="saveKey">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save
+        </button>
+      </div>
+      
+      <div class="status info" id="apiStatus"></div>
+      
+      <div id="getKeyContainer" style="text-align:center;margin-top:8px">
+        <a href="https://console.groq.com/keys" target="_blank" id="getKeyLink" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:10px;background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(99,102,241,.15));border:1px solid rgba(124,58,237,.3);color:#a78bfa;font-size:11px;font-weight:600;text-decoration:none;transition:all .2s ease">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 2l-2 2m-1.5 1.5L14 9l-1.5-1.5-3 3 1.5 1.5L9 14l-1.5-1.5L3 17a3 3 0 1 0 4.24 4.24l4.5-4.5 1.5 1.5 3-3-1.5-1.5 3.5-3.5 1.5 1.5 2-2-1.5-1.5L21 2z"/></svg>
+          Get Free Groq Key &rarr; console.groq.com
+        </a>
+      </div>
+    </div>
+    
+    <footer>
+      <div>
+        <button id="logoutBtn" class="logout-btn">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Reset Keys
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

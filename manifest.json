@@ -1,0 +1,65 @@
+{
+  "manifest_version": 3,
+  "name": "Coursera Quiz Solver",
+  "version": "2.0.0",
+  "description": "A solver for Coursera",
+  "icons": {
+    "16": "icons/coursera16.png",
+    "32": "icons/coursera32.png",
+    "48": "icons/coursera48.png",
+    "64": "icons/coursera64.png",
+    "128": "icons/coursera128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/coursera16.png",
+      "32": "icons/coursera32.png",
+      "48": "icons/coursera48.png",
+      "128": "icons/coursera128.png"
+    },
+    "default_title": "Coursera Quiz Solver"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.coursera.org/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.coursera.org/*",
+    "https://api.groq.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://quizsolver.infinityfreeapp.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pageBridge.js",
+        "icons/logo.png",
+        "icons/coursera.png"
+      ],
+      "matches": [
+        "https://*.coursera.org/*"
+      ]
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}
